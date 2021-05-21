@@ -8,14 +8,16 @@ using System.Threading.Tasks;
 namespace ProductManagementReview_LINQ
 {
     class Program
-    {/* UC1:- Product Review Management
-              - Create Product review class with ProductID, UserID, Rating, Review and isLike fields.
-              - Create variable for List of Product Review class in Main method
-              - Add 25 default values in list which we have created.
-        */
+    {
         static void Main(string[] args) //Main Method
         {
+            Console.WriteLine("Welcome To Product Management Review - LINQ\n");
 
+            /* UC1:- Product Review Management
+                     - Create Product review class with ProductID, UserID, Rating, Review and isLike fields.
+                     - Create variable for List of Product Review class in Main method
+                     - Add 25 default values in list which we have created.
+             */
             List<ProductReview> productReviewlist = new List<ProductReview>()
             {
                new ProductReview() { ProductId = 1, UserId = 1, Rating = 3, Review = "Average", isLike = true }, //Adding Data
@@ -44,14 +46,47 @@ namespace ProductManagementReview_LINQ
                new ProductReview() { ProductId = 24, UserId = 8, Rating = 2, Review = "Bad", isLike = true }, //Adding Date
                new ProductReview() { ProductId = 25, UserId = 12, Rating = 3, Review = "Average", isLike = false }, //Adding Data
               
-            };
-            foreach (var list in productReviewlist)
+            };            
+            //CreateDataTable(); // Class Program
+
+            //IterateProductReview(); //UC1
+            Retrievetop3records(productReviewlist); //UC2
+
+
+            Console.ReadLine();
+        }
+
+        public static void IterateProductReview(List<ProductReview> productReviewlist)
+        {
+            foreach (ProductReview list in productReviewlist) //ptint list item
             {
                 Console.WriteLine($"ProductId:- {list.ProductId}   || UserId:- {list.UserId}   || Rating:- {list.Rating}   || Review:- {list.Review }   ||   IsLike:- {list.isLike }"); //Print data
             }
-            // CreateDataTable();
-            Console.ReadLine();
         }
+
+
+        /* UC2:- Product Review Management.
+                 - Retrieve top 3 records from the list who’s rating is high using LINQ.
+        */
+        public static void Retrievetop3records(List<ProductReview> productReviewlist)
+        {    
+            //Query syntax for LINQ
+            var result = (from products in productReviewlist orderby products.Rating descending
+                          select products).Take(3);
+            foreach (var elements in result)
+            {
+                Console.WriteLine($"ProductId:- {elements.ProductId} UserId:- {elements.UserId} Rating:- {elements.Rating} Review:- {elements.Review} isLike:- {elements.isLike}");
+            }
+
+        }
+
+        
+
+
+
+
+
+        /* Class Program*/
         public static void CreateDataTable() //create method
         {   DataTable table = new DataTable(); //create table and create object
             table.Columns.Add("ProductId");     // add Columns in table
@@ -73,5 +108,12 @@ namespace ProductManagementReview_LINQ
                 Console.WriteLine($"ProductName:- {item}"); //print 
             }
         }
+
+        
+
+        
+
+        
     }
+   
 }
