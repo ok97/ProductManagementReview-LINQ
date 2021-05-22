@@ -53,7 +53,8 @@ namespace ProductManagementReview_LINQ
             //Retrievetop3records(productReviewlist); //UC2
             // RetrieveRecordsWithGreaterThanThreeRating(productReviewlist); //UC3
             //RetrieveCountOfReviewForEachProductId(productReviewlist); //UC4
-            RetrieveProductIDAndReviewOfAllRecords(productReviewlist); //UC5
+            // RetrieveProductIDAndReviewOfAllRecords(productReviewlist); //UC5
+            SkipTopFiveRecords(productReviewlist); //UC6
 
 
             Console.ReadLine();
@@ -109,14 +110,14 @@ namespace ProductManagementReview_LINQ
                 {
                     Console.WriteLine($"ProductId:- {List.ProductId}   || UserId:- {List.UserId}   || Rating:- {List.Rating}   || Review:- {List.Review }   ||   IsLike:- {List.isLike }"); //Print data
                 }
-              
+
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-           
+
         }
 
         /* UC4:- Product Review Management.
@@ -126,16 +127,16 @@ namespace ProductManagementReview_LINQ
 
         public static void RetrieveCountOfReviewForEachProductId(List<ProductReview> productReviewlist)
         {
-            try 
-            { 
-            var RecordedData = (productReviewlist.GroupBy(p => p.ProductId).Select(x => new { ProductId = x.Key, Count = x.Count() }));
-            Console.WriteLine("\n Count group by ProductId");
-            foreach (var List in RecordedData)
+            try
             {
-                Console.WriteLine($"ProductId:- {List.ProductId}   || Count :- {List.Count}"); //Print data
+                var RecordedData = (productReviewlist.GroupBy(p => p.ProductId).Select(x => new { ProductId = x.Key, Count = x.Count() }));
+                Console.WriteLine("\n Count group by ProductId");
+                foreach (var List in RecordedData)
+                {
+                    Console.WriteLine($"ProductId:- {List.ProductId}   || Count :- {List.Count}"); //Print data
+                }
             }
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -158,13 +159,33 @@ namespace ProductManagementReview_LINQ
                     Console.WriteLine($"ProductID:-   {productReview.ProductId}  \t Review:-   { productReview.Review}");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
 
 
+        /* UC6:- Product Review Management.
+                 - Skip top 5 records from the list using LINQ and display other Records.
+        */
+        public static void SkipTopFiveRecords(List<ProductReview> productReviewlist)
+        {
+            try
+            {
+                var RecordedData = (from products in productReviewlist
+                                    select products).Skip(5);
+                Console.WriteLine("\n Skiping the Top five records and Display others ");
+                foreach (var productReview in RecordedData) //traversing each items
+                {
+                    Console.WriteLine($"ProductId:- {productReview.ProductId}\tUserId:- {productReview.UserId}\tRating:- {productReview.Rating}\t  Review:- {productReview.Review}  \t    isLike:- {productReview.isLike}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
 
 
