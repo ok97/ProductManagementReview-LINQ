@@ -20,7 +20,7 @@ namespace ProductManagementReview_LINQ
              */
             List<ProductReview> productReviewlist = new List<ProductReview>()
             {
-               new ProductReview() { ProductId = 1, UserId = 1, Rating = 3, Review = "Average", isLike = true }, //Adding Data
+               new ProductReview() { ProductId = 1, UserId = 1, Rating = 4, Review = "Average", isLike = true }, //Adding Data
                new ProductReview() { ProductId = 2, UserId = 2, Rating = 2, Review = "Bad", isLike = false }, //Adding Data
                new ProductReview() { ProductId = 3, UserId = 3, Rating = 4, Review = "Nice", isLike = true }, //Adding Data
                new ProductReview() { ProductId = 4, UserId = 4, Rating = 5, Review = "Good", isLike = false }, //Adding Data
@@ -46,11 +46,12 @@ namespace ProductManagementReview_LINQ
                new ProductReview() { ProductId = 24, UserId = 8, Rating = 2, Review = "Bad", isLike = true }, //Adding Date
                new ProductReview() { ProductId = 25, UserId = 12, Rating = 3, Review = "Average", isLike = false }, //Adding Data
               
-            };            
+            };
             //CreateDataTable(); // Class Program
 
-            //IterateProductReview(); //UC1
-            Retrievetop3records(productReviewlist); //UC2
+            //IterateProductReview(productReviewlist); //UC1
+            // Retrievetop3records(productReviewlist); //UC2
+            RetrieveRecordsWithGreaterThanThreeRating(productReviewlist); //UC3
 
 
             Console.ReadLine();
@@ -69,8 +70,8 @@ namespace ProductManagementReview_LINQ
                  - Retrieve top 3 records from the list who’s rating is high using LINQ.
         */
         public static void Retrievetop3records(List<ProductReview> productReviewlist)
-        {    
-            //Query syntax for LINQ
+        {
+            //Query syntax for LINQ     //product veriable  productReviewlist list products.Rating column name
             var result = (from products in productReviewlist orderby products.Rating descending
                           select products).Take(3);
             foreach (var elements in result)
@@ -80,7 +81,28 @@ namespace ProductManagementReview_LINQ
 
         }
 
-        
+        /*UC3:- Product Review Management.
+                - Retrieve all record from the list who’s rating are greater then 3 and 
+                productID is 1 or 4 or 9 using LINQ.
+        */
+
+        public static void RetrieveRecordsWithGreaterThanThreeRating(List<ProductReview> productReviewlist)
+        {           //Query syntax for LINQ 
+            var RecordedData = (from productReviews in productReviewlist
+                                where (productReviews.ProductId == 1 || productReviews.ProductId == 4 || productReviews.ProductId == 9)
+                                && productReviews.Rating > 3
+                                select productReviews);
+            Console.WriteLine("\nProducts with Rating Greater than 3 and productID = 1 or 4 or 9 are:- ");
+            foreach (var List in RecordedData)
+            {
+                Console.WriteLine($"ProductId:- {List.ProductId}   || UserId:- {List.UserId}   || Rating:- {List.Rating}   || Review:- {List.Review }   ||   IsLike:- {List.isLike }"); //Print data
+            }
+        }
+
+
+
+
+
 
 
 
