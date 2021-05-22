@@ -57,7 +57,8 @@ namespace ProductManagementReview_LINQ
             // RetrieveProductIDAndReviewOfAllRecords(productReviewlist); //UC5
             //SkipTopFiveRecords(productReviewlist); //UC6
             // RetrieveProductIDAndReviewUsingLambdaSyntax(productReviewlist); //UC7
-            CreateDataTable(); //UC8
+            //CreateDataTable(); //UC8
+            RetrieveRecordWithTrueIsLike(); //UC9
 
 
 
@@ -215,12 +216,12 @@ namespace ProductManagementReview_LINQ
                 - Create DataTable using C# and Add ProductID, UserID, Rating, Review and isLike fields in that.
                 - Add 25 default values in datatable list which we have UC 8 created Class Program.
        */
-
+        public static DataTable table = new DataTable(); //create table and create object
         public static void CreateDataTable() //create method
         {
             try
             {
-                DataTable table = new DataTable(); //create table and create object
+                
                 table.Columns.Add("ProductId", typeof(Int32)); // add Columns in table
                 table.Columns.Add("UserId", typeof(Int32)); // add Columns in table
                 table.Columns.Add("Rating", typeof(double)); // add Columns in table
@@ -264,7 +265,24 @@ namespace ProductManagementReview_LINQ
             {
                 Console.WriteLine(ex.Message);
             }
-        }           
+        }
+
+        /* UC9:- Product Review Management.
+                 - Retrieve all the records from the datatable variable who’s isLike value is true using LINQ
+         */
+        public static void RetrieveRecordWithTrueIsLike()
+        {
+            var result = from product in table.AsEnumerable()
+                         where product.Field<bool>("isLike") == true
+                         select product;
+
+            Console.WriteLine("\nRecords in table whose IsLike value is true");
+            foreach (var list in result) //Printing data
+            {
+                Console.WriteLine("ProductId:-" + list.Field<int>("ProductId") + "\t" + "UserId:- " + list.Field<int>("UserId") + "\t" + "Rating:-" + list.Field<double>("Rating") + "\t" + "Review:-" + list.Field<string>("Review") + "\t" + "isLike:-" + list.Field<bool>("isLike"));
+            }
+        }
+
     }
 
 }
