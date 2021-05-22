@@ -58,8 +58,9 @@ namespace ProductManagementReview_LINQ
             //SkipTopFiveRecords(productReviewlist); //UC6
             //RetrieveProductIDAndReviewUsingLambdaSyntax(productReviewlist); //UC7
             //CreateDataTable(); //UC8
-           // RetrieveRecordWithTrueIsLike(); //UC9
-            FindAverageRatingOfTheEachProductId();
+            // RetrieveRecordWithTrueIsLike(); //UC9
+            //FindAverageRatingOfTheEachProductId();//UC10
+            RetrieveRecordsWithReviewContainsNice();//UC11
 
 
 
@@ -259,7 +260,7 @@ namespace ProductManagementReview_LINQ
                 Console.WriteLine("DataTable Records");
                 foreach (var list in table.AsEnumerable())
                 {
-                    Console.WriteLine($"ProductId:- { list.Field<int>("ProductId")}    UserId:- {list.Field<int>("UserId")}\tRating:- {list.Field<double>("Rating")}\tReview:- { list.Field<string>("Review")} \tisLike:- {list.Field<bool>("isLike")}");
+                    Console.WriteLine("ProductId:- " + list.Field<int>("ProductId") + "\t" + "UserId:-" + list.Field<int>("UserId") + "\t" + "Rating:-" + list.Field<double>("Rating") + "\t" + "Review:-" + list.Field<string>("Review") + "\t" + "IsLike:-" + list.Field<bool>("isLike"));
                 }
             }
             catch (Exception ex)
@@ -275,7 +276,7 @@ namespace ProductManagementReview_LINQ
         {
             try
             {
-             
+
                 CreateDataTable(); //UC8 call CreateDataTable method 
                                    // Query syntax for LINQ 
                 var retrieveData = from records in table.AsEnumerable()
@@ -311,12 +312,35 @@ namespace ProductManagementReview_LINQ
                     Console.WriteLine($"ProductID:{v.ProductId}\tAverageRating:{v.Average}");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
+        /*UC11:- Product Review Management
+                 • Retreive all records from the list who’s review message contain “nice” in it using LINQ.
+        */
+        public static void RetrieveRecordsWithReviewContainsNice()
+        {
+            try
+            {
+                CreateDataTable(); //UC8 call CreateDataTable method 
+                                   // Query syntax for LINQ 
+                var retrieveData = from records in table.AsEnumerable()
+                                   where (records.Field<string>("Review") == "Nice")
+                                   select records;
+                //Printing data
+                Console.WriteLine("\nRecords in table Whose Review contains Nice:");
+                foreach (var list in retrieveData)
+                {
+                    Console.WriteLine("ProductId:- " + list.Field<int>("ProductId") + "\t" + "UserId:-" + list.Field<int>("UserId") + "\t" + "Rating:-" + list.Field<double>("Rating") + "\t" + "Review:-" + list.Field<string>("Review") + "\t" + "IsLike:-" + list.Field<bool>("isLike"));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
     }
 
