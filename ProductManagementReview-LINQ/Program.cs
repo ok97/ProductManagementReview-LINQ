@@ -60,7 +60,8 @@ namespace ProductManagementReview_LINQ
             //CreateDataTable(); //UC8
             // RetrieveRecordWithTrueIsLike(); //UC9
             //FindAverageRatingOfTheEachProductId();//UC10
-            RetrieveRecordsWithReviewContainsNice();//UC11
+           // RetrieveRecordsWithReviewContainsNice();//UC11
+            RetrieveRecordsForGivenUserIdOrderByRating(); //UC12
 
 
 
@@ -307,7 +308,7 @@ namespace ProductManagementReview_LINQ
                                    // Query syntax for LINQ 
                 var records = table.AsEnumerable().GroupBy(r => r.Field<int>("ProductId")).Select(r => new { ProductId = r.Key, Average = r.Average(z => (z.Field<double>("Rating"))) });
                 Console.WriteLine("\nProductId and its average rating");
-                foreach (var v in records)
+                foreach (var v in records) //iterates values
                 {
                     Console.WriteLine($"ProductID:{v.ProductId}\tAverageRating:{v.Average}");
                 }
@@ -331,7 +332,7 @@ namespace ProductManagementReview_LINQ
                                    select records;
                 //Printing data
                 Console.WriteLine("\nRecords in table Whose Review contains Nice:");
-                foreach (var list in retrieveData)
+                foreach (var list in retrieveData) //iterates values
                 {
                     Console.WriteLine("ProductId:- " + list.Field<int>("ProductId") + "\t" + "UserId:-" + list.Field<int>("UserId") + "\t" + "Rating:-" + list.Field<double>("Rating") + "\t" + "Review:-" + list.Field<string>("Review") + "\t" + "IsLike:-" + list.Field<bool>("isLike"));
                 }
@@ -342,6 +343,31 @@ namespace ProductManagementReview_LINQ
             }
         }
 
+        /*UC12:- Product Review Management.
+                 • Add some 5 to 6 records for Userid=10 in the datatable
+                 • Retreive all records from the list who’s Userid =10 and order by rating using LINQ
+        */
+        public static void RetrieveRecordsForGivenUserIdOrderByRating() //create method RetrieveRecordsForGivenUserIdOrderByRating
+        {
+            try
+            {
+                CreateDataTable(); //UC8 call CreateDataTable method 
+                                   // Query syntax for LINQ 
+                var retrievedData = from records in table.AsEnumerable()
+                                    where (records.Field<int>("UserId") == 10)
+                                    orderby records.Field<double>("Rating") descending
+                                    select records;
+                Console.WriteLine("\nSorted records by rating  with userId=10"); //print
+                foreach (var list in retrievedData) //iterates values
+                {
+                    Console.WriteLine("ProductId:- " + list.Field<int>("ProductId") + "\t" + "UserId:-" + list.Field<int>("UserId") + "\t" + "Rating:-" + list.Field<double>("Rating") + "\t" + "Review:-" + list.Field<string>("Review") + "\t" + "IsLike:-" + list.Field<bool>("isLike"));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 
 }
