@@ -56,9 +56,10 @@ namespace ProductManagementReview_LINQ
             //RetrieveCountOfReviewForEachProductId(productReviewlist); //UC4
             // RetrieveProductIDAndReviewOfAllRecords(productReviewlist); //UC5
             //SkipTopFiveRecords(productReviewlist); //UC6
-            // RetrieveProductIDAndReviewUsingLambdaSyntax(productReviewlist); //UC7
+            //RetrieveProductIDAndReviewUsingLambdaSyntax(productReviewlist); //UC7
             //CreateDataTable(); //UC8
-            RetrieveRecordWithTrueIsLike(); //UC9
+           // RetrieveRecordWithTrueIsLike(); //UC9
+            FindAverageRatingOfTheEachProductId();
 
 
 
@@ -212,16 +213,16 @@ namespace ProductManagementReview_LINQ
                 Console.WriteLine(ex.Message);
             }
         }
+
         /*UC8:- Product Review Management. 
-                - Create DataTable using C# and Add ProductID, UserID, Rating, Review and isLike fields in that.
-                - Add 25 default values in datatable list which we have UC 8 created Class Program.
-       */
-        public static DataTable table = new DataTable(); //create table and create object
-        public static void CreateDataTable() //create method
+               - Create DataTable using C# and Add ProductID, UserID, Rating, Review and isLike fields in that.
+               - Add 25 default values in datatable list which we have UC 8 created Class Program.
+      */
+        public static DataTable table = new DataTable();
+        public static void CreateDataTable()
         {
             try
             {
-                
                 table.Columns.Add("ProductId", typeof(Int32)); // add Columns in table
                 table.Columns.Add("UserId", typeof(Int32)); // add Columns in table
                 table.Columns.Add("Rating", typeof(double)); // add Columns in table
@@ -254,7 +255,7 @@ namespace ProductManagementReview_LINQ
                 table.Rows.Add(23, 10, 5, "Good", false); //Adding Data
                 table.Rows.Add(24, 8, 2, "Bad", true); //Adding Date
                 table.Rows.Add(22, 12, 3, "Average", false); //Adding Data
-
+                                                             //Printing data
                 Console.WriteLine("DataTable Records");
                 foreach (var list in table.AsEnumerable())
                 {
@@ -265,23 +266,57 @@ namespace ProductManagementReview_LINQ
             {
                 Console.WriteLine(ex.Message);
             }
-        }
 
+        }
         /* UC9:- Product Review Management.
-                 - Retrieve all the records from the datatable variable who’s isLike value is true using LINQ
-         */
+                - Retrieve all the records from the datatable variable who’s isLike value is true using LINQ
+        */
         public static void RetrieveRecordWithTrueIsLike()
         {
-            var result = from product in table.AsEnumerable()
-                         where product.Field<bool>("isLike") == true
-                         select product;
-
-            Console.WriteLine("\nRecords in table whose IsLike value is true");
-            foreach (var list in result) //Printing data
+            try
             {
-                Console.WriteLine("ProductId:-" + list.Field<int>("ProductId") + "\t" + "UserId:- " + list.Field<int>("UserId") + "\t" + "Rating:-" + list.Field<double>("Rating") + "\t" + "Review:-" + list.Field<string>("Review") + "\t" + "isLike:-" + list.Field<bool>("isLike"));
+             
+                CreateDataTable(); //UC8 call CreateDataTable method 
+                                   // Query syntax for LINQ 
+                var retrieveData = from records in table.AsEnumerable()
+                                   where (records.Field<bool>("isLike") == true)
+                                   select records;
+
+                Console.WriteLine("\nRecords in table whose IsLike value is true");
+                foreach (var list in retrieveData)  //Printing data
+                {
+                    Console.WriteLine("ProductId:-" + list.Field<int>("ProductId") + "\t" + "UserID :" + list.Field<int>("UserId") + "\t" + "Rating ;" + list.Field<double>("Rating") + "\t" + "Review :" + list.Field<string>("Review") + "\t" + "isLike :" + list.Field<bool>("isLike"));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
+
+        /*UC10:- Product Review Management.
+                 • Find average rating of the each productId using LINQ
+        */
+
+        public static void FindAverageRatingOfTheEachProductId()
+        {
+            try
+            {
+                CreateDataTable(); //UC8 call CreateDataTable method 
+                                   // Query syntax for LINQ 
+                var records = table.AsEnumerable().GroupBy(r => r.Field<int>("ProductId")).Select(r => new { ProductId = r.Key, Average = r.Average(z => (z.Field<double>("Rating"))) });
+                Console.WriteLine("\nProductId and its average rating");
+                foreach (var v in records)
+                {
+                    Console.WriteLine($"ProductID:{v.ProductId}\tAverageRating:{v.Average}");
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
 
     }
 
