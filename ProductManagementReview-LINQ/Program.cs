@@ -54,7 +54,9 @@ namespace ProductManagementReview_LINQ
             // RetrieveRecordsWithGreaterThanThreeRating(productReviewlist); //UC3
             //RetrieveCountOfReviewForEachProductId(productReviewlist); //UC4
             // RetrieveProductIDAndReviewOfAllRecords(productReviewlist); //UC5
-            SkipTopFiveRecords(productReviewlist); //UC6
+            //SkipTopFiveRecords(productReviewlist); //UC6
+            RetrieveProductIDAndReviewUsingLambdaSyntax(productReviewlist); //UC7
+
 
 
             Console.ReadLine();
@@ -172,7 +174,7 @@ namespace ProductManagementReview_LINQ
         public static void SkipTopFiveRecords(List<ProductReview> productReviewlist)
         {
             try
-            {
+            {       //Query syntax for LINQ 
                 var RecordedData = (from products in productReviewlist
                                     select products).Skip(5);
                 Console.WriteLine("\n Skiping the Top five records and Display others ");
@@ -187,6 +189,25 @@ namespace ProductManagementReview_LINQ
             }
         }
 
+        /*UC7:- Product Review Management.
+                - Retrieve only productId and review from the list for all records using LINQ select operator.
+         */
+        public static void RetrieveProductIDAndReviewUsingLambdaSyntax(List<ProductReview> productReviewlist)
+        {
+            try
+            {                // Query syntax for LINQ 
+                var RecordedData = productReviewlist.Select(reviews => new { ProductId = reviews.ProductId, Review = reviews.Review });
+                Console.WriteLine("\nRetrieving Product and Review from list");
+                foreach (var productReview in RecordedData) //traversing each items
+                {
+                    Console.WriteLine($"ProductId:- {productReview.ProductId}\tReview:- {productReview.Review}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
 
 
