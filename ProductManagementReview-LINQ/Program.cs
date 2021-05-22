@@ -271,7 +271,8 @@ namespace ProductManagementReview_LINQ
                  - Retrieve all the records from the datatable variable who’s isLike value is true using LINQ
          */
         public static void RetrieveRecordWithTrueIsLike()
-        {
+        { 
+            CreateDataTable(); //UC8
             var result = from product in table.AsEnumerable()
                          where product.Field<bool>("isLike") == true
                          select product;
