@@ -21,7 +21,7 @@ namespace ProductManagementReview_LINQ
             List<ProductReview> productReviewlist = new List<ProductReview>()
             {
                new ProductReview() { ProductId = 1, UserId = 1, Rating = 4, Review = "Average", isLike = true }, //Adding Data
-               new ProductReview() { ProductId = 2, UserId = 2, Rating = 2, Review = "Bad", isLike = false }, //Adding Data
+               new ProductReview() { ProductId = 1, UserId = 2, Rating = 2, Review = "Bad", isLike = false }, //Adding Data
                new ProductReview() { ProductId = 3, UserId = 3, Rating = 4, Review = "Nice", isLike = true }, //Adding Data
                new ProductReview() { ProductId = 4, UserId = 4, Rating = 5, Review = "Good", isLike = false }, //Adding Data
                new ProductReview() { ProductId = 5, UserId = 5, Rating = 6, Review = "Excelent", isLike = false }, //Adding Data
@@ -44,14 +44,15 @@ namespace ProductManagementReview_LINQ
                new ProductReview() { ProductId = 22, UserId = 5, Rating = 1, Review = "Very Bad", isLike = false }, //Adding Data
                new ProductReview() { ProductId = 23, UserId = 10, Rating = 5, Review = "Good", isLike = false }, //Adding Data
                new ProductReview() { ProductId = 24, UserId = 8, Rating = 2, Review = "Bad", isLike = true }, //Adding Date
-               new ProductReview() { ProductId = 25, UserId = 12, Rating = 3, Review = "Average", isLike = false }, //Adding Data
+               new ProductReview() { ProductId = 22, UserId = 12, Rating = 3, Review = "Average", isLike = false }, //Adding Data
               
             };
             //CreateDataTable(); // Class Program
 
             //IterateProductReview(productReviewlist); //UC1
-            // Retrievetop3records(productReviewlist); //UC2
-            RetrieveRecordsWithGreaterThanThreeRating(productReviewlist); //UC3
+            //Retrievetop3records(productReviewlist); //UC2
+            // RetrieveRecordsWithGreaterThanThreeRating(productReviewlist); //UC3
+            RetrieveCountOfReviewForEachProductId(productReviewlist); //UC4
 
 
             Console.ReadLine();
@@ -71,12 +72,20 @@ namespace ProductManagementReview_LINQ
         */
         public static void Retrievetop3records(List<ProductReview> productReviewlist)
         {
-            //Query syntax for LINQ     //product veriable  productReviewlist list products.Rating column name
-            var result = (from products in productReviewlist orderby products.Rating descending
-                          select products).Take(3);
-            foreach (var elements in result)
+            try
             {
-                Console.WriteLine($"ProductId:- {elements.ProductId} UserId:- {elements.UserId} Rating:- {elements.Rating} Review:- {elements.Review} isLike:- {elements.isLike}");
+                //Query syntax for LINQ     //product veriable  productReviewlist list products.Rating column name
+                var result = (from products in productReviewlist
+                              orderby products.Rating descending
+                              select products).Take(3);
+                foreach (var elements in result)
+                {
+                    Console.WriteLine($"ProductId:- {elements.ProductId} UserId:- {elements.UserId} Rating:- {elements.Rating} Review:- {elements.Review} isLike:- {elements.isLike}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
         }
@@ -87,15 +96,40 @@ namespace ProductManagementReview_LINQ
         */
 
         public static void RetrieveRecordsWithGreaterThanThreeRating(List<ProductReview> productReviewlist)
-        {           //Query syntax for LINQ 
-            var RecordedData = (from productReviews in productReviewlist
-                                where (productReviews.ProductId == 1 || productReviews.ProductId == 4 || productReviews.ProductId == 9)
-                                && productReviews.Rating > 3
-                                select productReviews);
-            Console.WriteLine("\nProducts with Rating Greater than 3 and productID = 1 or 4 or 9 are:- ");
+        {
+            try
+            {   //Query syntax for LINQ 
+                var RecordedData = (from productReviews in productReviewlist
+                                    where (productReviews.ProductId == 1 || productReviews.ProductId == 4 || productReviews.ProductId == 9)
+                                    && productReviews.Rating > 3
+                                    select productReviews);
+                Console.WriteLine("\nProducts with Rating Greater than 3 and productID = 1 or 4 or 9 are:- ");
+                foreach (var List in RecordedData) //traversing each items
+                {
+                    Console.WriteLine($"ProductId:- {List.ProductId}   || UserId:- {List.UserId}   || Rating:- {List.Rating}   || Review:- {List.Review }   ||   IsLike:- {List.isLike }"); //Print data
+                }
+              
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+           
+        }
+
+        /* UC4:- Product Review Management.
+                 - Retrieve count of review present for each productID.
+                 - Use groupBy LINQ Operator. 
+         */
+
+        public static void RetrieveCountOfReviewForEachProductId(List<ProductReview> productReviewlist)
+        {
+            var RecordedData = (productReviewlist.GroupBy(p => p.ProductId).Select(x => new { ProductId = x.Key, Count = x.Count() }));
+            Console.WriteLine("\n Count group by ProductId");
             foreach (var List in RecordedData)
             {
-                Console.WriteLine($"ProductId:- {List.ProductId}   || UserId:- {List.UserId}   || Rating:- {List.Rating}   || Review:- {List.Review }   ||   IsLike:- {List.isLike }"); //Print data
+                Console.WriteLine($"ProductId:- {List.ProductId}   || Count :- {List.Count}"); //Print data
             }
         }
 
@@ -110,32 +144,41 @@ namespace ProductManagementReview_LINQ
 
         /* Class Program*/
         public static void CreateDataTable() //create method
-        {   DataTable table = new DataTable(); //create table and create object
-            table.Columns.Add("ProductId");     // add Columns in table
-            table.Columns.Add("ProductName"); // add Columns in table
+        {
+            try
+            {
+                DataTable table = new DataTable(); //create table and create object
+                table.Columns.Add("ProductId");     // add Columns in table
+                table.Columns.Add("ProductName"); // add Columns in table
 
-            table.Rows.Add("1","Laptop"); //add rows on table
-            table.Rows.Add("2","Mobile");
-            table.Rows.Add("3","Tablet");
-            table.Rows.Add("4","Desktop");
-            table.Rows.Add("5","Watch");
-            DisplayTableProduct(table); 
+                table.Rows.Add("1", "Laptop"); //add rows on table
+                table.Rows.Add("2", "Mobile");
+                table.Rows.Add("3", "Tablet");
+                table.Rows.Add("4", "Desktop");
+                table.Rows.Add("5", "Watch");
+                DisplayTableProduct(table);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
         }
         public static void DisplayTableProduct(DataTable table) //Create DisplayTableProduct method
         {
-            var Productname = from product in table.AsEnumerable() select product.Field<string>("ProductName"); //Fetch Product of the table
-            foreach (var item in Productname) //iiterate 
+            try
             {
-                Console.WriteLine($"ProductName:- {item}"); //print 
+                var Productname = from product in table.AsEnumerable() select product.Field<string>("ProductName"); //Fetch Product of the table
+                foreach (var item in Productname) //iiterate 
+                {
+                    Console.WriteLine($"ProductName:- {item}"); //print 
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
-
-        
-
-        
-
-        
     }
-   
+
 }
